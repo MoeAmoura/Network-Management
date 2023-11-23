@@ -1,0 +1,121 @@
+ID-140798 DEFINITIONS ::= BEGIN
+
+IMPORTS
+    MODULE-IDENTITY, OBJECT-TYPE, Integer32, Counter32, Unsigned32,
+    mib-2, IpAddress , Gauge32
+        FROM SNMPv2-SMI
+    TEXTUAL-CONVENTION, MacAddress
+        FROM SNMPv2-TC
+    enterprises 
+       FROM SNMPv2-SMI;
+
+
+iD-140798 MODULE-IDENTITY
+    LAST-UPDATED "202304040000Z"
+    ORGANIZATION "JUST"
+    CONTACT-INFO
+        "Mohammad Ammourah & Yazeed Abu Khalil "
+    DESCRIPTION
+        "Root node for all MIB objects."
+    REVISION      "202304040000Z"
+    DESCRIPTION
+        "The latest version of this MIB module."
+    ::= { nes470 1 }
+
+nes470 OBJECT IDENTIFIER ::= { enterprises 9000}
+
+firewallTable OBJECT-TYPE
+    SYNTAX SEQUENCE OF FwEntry
+    MAX-ACCESS not-accessible
+    STATUS current
+    DESCRIPTION
+        "A table of firewall rules."
+    ::= { nes470 2 }
+
+firewallEntry OBJECT-TYPE
+  SYNTAX FwEntry
+  MAX-ACCESS not-accessible
+  STATUS current
+  DESCRIPTION 
+  "A firewall rule."
+  INDEX { fwSrcIp }
+  ::= { firewallTable 1 }
+
+FwEntry ::= SEQUENCE {
+    fwSrcMac            MacAddress,
+    fwDstMac            MacAddress,
+    fwSrcIp             IpAddress,
+    fwDstIp             IpAddress,
+    fwSrcPort           Integer32,
+    fwDstPort           Integer32,
+    fwProtocol          INTEGER,
+    fwAction            INTEGER,
+    fwMatchedPackets    Counter32
+}
+
+fwSrcMac OBJECT-TYPE
+   SYNTAX MacAddress
+   MAX-ACCESS read-write
+   STATUS current
+   DESCRIPTION
+       "The MAC address of the source host in the firewall rule."
+   ::= { firewallEntry 1 }
+
+fwDstMac OBJECT-TYPE
+   SYNTAX MacAddress
+   MAX-ACCESS read-write
+   STATUS current
+   DESCRIPTION
+       "The MAC address of the source host in the firewall rule."
+   ::= { firewallEntry 2 }
+   
+fwSrcIp OBJECT-TYPE
+    SYNTAX IpAddress
+    MAX-ACCESS read-write
+    STATUS current
+    DESCRIPTION "The source IP address of the firewall rule."
+    ::= { firewallEntry 3 }
+
+fwDstIp OBJECT-TYPE
+    SYNTAX IpAddress
+    MAX-ACCESS read-write
+    STATUS current
+    DESCRIPTION "The destination IP address of the firewall rule."
+    ::= { firewallEntry 4 }
+
+fwSrcPort OBJECT-TYPE
+    SYNTAX Integer32 (0..65535)
+    MAX-ACCESS read-write
+    STATUS current
+    DESCRIPTION "The source TCP/UDP port number of the firewall rule."
+    ::= { firewallEntry 5 }
+
+fwDstPort OBJECT-TYPE
+    SYNTAX Integer32 (0..65535)
+    MAX-ACCESS read-write
+    STATUS current
+    DESCRIPTION "The destination TCP/UDP port number of the firewall rule."
+    ::= { firewallEntry 6 }
+
+fwProtocol OBJECT-TYPE
+    SYNTAX INTEGER { tcp(1), udp(2), icmp(3) }
+    MAX-ACCESS read-write
+    STATUS current
+    DESCRIPTION "The protocol type of the firewall rule."
+    ::= { firewallEntry 7 }
+
+fwAction OBJECT-TYPE
+    SYNTAX INTEGER { accept(1), drop(2), reject(3) }
+    MAX-ACCESS read-write
+    STATUS current
+    DESCRIPTION "The action of the firewall rule."
+    ::= { firewallEntry 8 }
+
+fwMatchedPackets OBJECT-TYPE
+    SYNTAX Counter32
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "The number of packets that have matched this firewall rule."
+    ::= { firewallEntry 9 }
+
+END
