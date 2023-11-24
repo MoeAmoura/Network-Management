@@ -1,0 +1,100 @@
+module ID-140798 
+{
+  yang-version 1.1;
+  namespace "urn:example:id-140798";
+  prefix amourah;
+
+  import ietf-inet-types {
+    prefix inet;
+  }
+  import ietf-yang-types {
+    prefix yang;
+  }
+
+  organization "JUST";
+  contact "";
+  description "Firewall Table using YANG module.";
+  revision 2023-05-26 {
+        description "Initial revision.";
+    }
+
+  // Data nodes
+
+container firewall {
+    list firewall-table {
+      key "source-mac-address destination-mac-address source-ip-address destination-ip-address source-port-number destination-port-number protocol";
+      description "Firewall rule.";
+
+      leaf source-mac-address {
+        type yang:mac-address;
+        mandatory true;
+        config true;
+        description "Source MAC address.";
+      }
+
+      leaf destination-mac-address {
+        type yang:mac-address;
+        mandatory true;
+        config true;
+        description "Destination MAC address.";
+      }
+
+      leaf source-ip-address {
+        type inet:ipv4-address;
+        mandatory true;
+        config true;
+        description "Source IP address.";
+      }
+
+      leaf destination-ip-address {
+        type inet:ipv4-address;
+        mandatory true;
+        config true;
+        description "Destination IP address.";
+      }
+
+      leaf source-port-number {
+        type inet:port-number;
+        mandatory true;
+        config true;
+        description "Source TCP/UDP port number.";
+      }
+
+      leaf destination-port-number {
+        type inet:port-number;
+        mandatory true;
+        config true;
+        description "Destination TCP/UDP port number.";
+      }
+
+      leaf protocol {
+        type enumeration {
+        enum tcp;
+        enum udp;
+        enum icmp;
+      }
+        mandatory true;
+        config true;
+        description "Protocol type.";
+      }
+
+      leaf action {
+        type enumeration {
+        enum accept;
+        enum drop;
+        enum reject;
+      }
+        mandatory true;
+        config true;
+        description "Action to be taken.";
+      }
+
+      leaf packets-matched {
+        type yang:counter64;
+	mandatory true; 
+        config false;
+        description "Number of packets matched by this rule.";
+}
+      }
+    }
+}
